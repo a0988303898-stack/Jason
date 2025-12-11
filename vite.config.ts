@@ -5,13 +5,15 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
     plugins: [react()],
-    base: './', // Ensures assets are linked relatively for GitHub Pages
+    // IMPORTANT: Match this to your repository name for GitHub Pages
+    base: '/Jason/', 
     define: {
       'process.env.API_KEY': JSON.stringify(env.API_KEY || '')
     },
     build: {
       outDir: 'dist',
       assetsDir: 'assets',
+      sourcemap: true, // Enable source maps for better debugging of errors
     }
   };
 });

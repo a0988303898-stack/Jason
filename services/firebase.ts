@@ -19,8 +19,11 @@ const firebaseConfig = {
 if (!firebase.apps.length) {
   try {
     firebase.initializeApp(firebaseConfig);
+    console.log("Firebase initialized successfully");
   } catch (err) {
     console.error("Firebase Initialization Error:", err);
+    // Rethrow to ensure global error handler catches it and shows on screen
+    throw new Error("Failed to initialize Firebase: " + (err instanceof Error ? err.message : String(err)));
   }
 }
 
