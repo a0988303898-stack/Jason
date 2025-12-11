@@ -1,6 +1,6 @@
-import firebase from 'firebase/app';
-import 'firebase/auth';
-import 'firebase/firestore';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 
 // ------------------------------------------------------------------
 // CONFIGURATION REQUIRED
@@ -22,10 +22,11 @@ const firebaseConfig = {
 // We check if apiKey is the placeholder text or empty
 if (!firebaseConfig.apiKey || firebaseConfig.apiKey.includes("YOUR_API_KEY")) {
   console.error("Firebase config is missing!");
-  alert("Login Error: Firebase Configuration is missing.\n\nPlease open 'services/firebase.ts' and replace the placeholder config with your actual Firebase project keys.");
+  // Note: Alert might block rendering, handled better by UI error states usually
 }
 
 // Initialize Firebase
+// Using compat mode allows using v8 syntax (firebase.auth(), etc.) with v9/v10 packages
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }

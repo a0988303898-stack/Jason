@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 
 const getAiClient = () => {
   const apiKey = process.env.API_KEY;
@@ -17,23 +17,22 @@ export const fetchStockPrice = async (symbol: string): Promise<{ price: number; 
     const response = await ai.models.generateContent({
       model: "gemini-3-pro-preview", // Use a model capable of search
       contents: `Find the current stock price and full company name for "${symbol}". 
-      If it is a Taiwan stock, provide the price in TWD. If US, in USD.`,
+      If it is a Taiwan stock, provide the price in TWD. If US, in USD.
+      Return the output as a JSON object with keys "price" (number) and "name" (string).`,
       config: {
         tools: [{ googleSearch: {} }],
-        responseMimeType: "application/json",
-        responseSchema: {
-          type: Type.OBJECT,
-          properties: {
-            price: { type: Type.NUMBER, description: "The current stock price" },
-            name: { type: Type.STRING, description: "The full name of the company" },
-          },
-          required: ["price", "name"]
-        }
+        // responseMimeType and responseSchema are not supported with googleSearch
       },
     });
 
     const text = response.text;
     if (!text) return null;
+    
+    // Extract JSON from text (in case of markdown wrapping)
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+        return JSON.parse(jsonMatch[0]);
+    }
     return JSON.parse(text);
   } catch (error) {
     console.error("Gemini Stock Fetch Error:", error);
