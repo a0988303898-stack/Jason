@@ -31,7 +31,21 @@ const App: React.FC = () => {
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    // Safety timeout: If Firebase takes too long (e.g. network block), stop loading so user can retry or see error
+    const timer = setTimeout(() => {
+      setLoading((current) => {
+        if (current) {
+          console.warn("Auth listener timed out, forcing UI render.");
+          return false;
+        }
+        return false;
+      });
+    }, 3000);
+
+    return () => {
+      unsubscribe();
+      clearTimeout(timer);
+    };
   }, []);
 
   const handleLogout = async () => {
@@ -58,7 +72,12 @@ const App: React.FC = () => {
   );
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center bg-gray-100">Loading WealthFlow...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100 flex-col gap-4">
+        <i className="fas fa-circle-notch fa-spin text-4xl text-blue-600"></i>
+        <div className="text-gray-600 font-medium">Connecting to WealthFlow...</div>
+      </div>
+    );
   }
 
   if (!user) {
