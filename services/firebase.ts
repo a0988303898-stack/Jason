@@ -3,10 +3,7 @@ import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 
 // ------------------------------------------------------------------
-// CONFIGURATION REQUIRED
-// ------------------------------------------------------------------
-// Please replace the object below with your actual Firebase config.
-// You can get this from Firebase Console -> Project Settings -> General
+// CONFIGURATION
 // ------------------------------------------------------------------
 const firebaseConfig = {
   apiKey: "AIzaSyA4GlqxdU_Elmb91v6DS8qAMj1W73bt8V8",
@@ -18,17 +15,13 @@ const firebaseConfig = {
   measurementId: "G-TDFM7TLXLK"
 };
 
-// Check if user has configured the app properly
-// We check if apiKey is the placeholder text or empty
-if (!firebaseConfig.apiKey || firebaseConfig.apiKey.includes("YOUR_API_KEY")) {
-  console.error("Firebase config is missing!");
-  // Note: Alert might block rendering, handled better by UI error states usually
-}
-
 // Initialize Firebase
-// Using compat mode allows using v8 syntax (firebase.auth(), etc.) with v9/v10 packages
 if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
+  try {
+    firebase.initializeApp(firebaseConfig);
+  } catch (err) {
+    console.error("Firebase Initialization Error:", err);
+  }
 }
 
 export const auth = firebase.auth();

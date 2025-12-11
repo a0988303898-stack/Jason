@@ -22,6 +22,11 @@
         border-radius: 8px;
         border: 1px solid #ef4444;
         white-space: pre-wrap;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 9999;
       }
     </style>
     <!-- Polyfill for process/env to prevent libraries from crashing -->
@@ -37,7 +42,7 @@
         const errorBox = document.getElementById('error-display');
         if (errorBox) {
           errorBox.style.display = 'block';
-          errorBox.textContent += 'Error: ' + event.message + '\n';
+          errorBox.textContent += 'JS Error: ' + (event.message || event) + '\n';
         }
       });
       
@@ -45,11 +50,11 @@
         const errorBox = document.getElementById('error-display');
         if (errorBox) {
           errorBox.style.display = 'block';
-          errorBox.textContent += 'Promise Error: ' + event.reason + '\n';
+          errorBox.textContent += 'Promise Error: ' + (event.reason ? (event.reason.message || event.reason) : event) + '\n';
         }
       });
     </script>
-  <script type="importmap">
+<script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@^19.2.1",
