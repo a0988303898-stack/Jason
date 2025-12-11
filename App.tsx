@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { User, ViewState } from './types';
 import { logoutUser } from './services/storageService';
 import { auth } from './services/firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 import Auth from './components/Auth';
 import Dashboard from './pages/Dashboard';
 import Accounts from './pages/Accounts';
@@ -17,7 +18,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     // Firebase Auth Listener
-    const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (firebaseUser) {
         setUser({
           id: firebaseUser.uid,

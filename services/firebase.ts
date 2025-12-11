@@ -17,8 +17,10 @@ const firebaseConfig = {
   appId: "1:548808186578:web:687cc13ff0316622cfeb0b",
   measurementId: "G-TDFM7TLXLK"
 };
-// Check if user has configured the app
-if (firebaseConfig.apiKey === "YOUR_API_KEY_HERE") {
+
+// Check if user has configured the app properly
+// We check if apiKey is the placeholder text or empty
+if (!firebaseConfig.apiKey || firebaseConfig.apiKey.includes("YOUR_API_KEY")) {
   console.error("Firebase config is missing!");
   alert("Login Error: Firebase Configuration is missing.\n\nPlease open 'services/firebase.ts' and replace the placeholder config with your actual Firebase project keys.");
 }

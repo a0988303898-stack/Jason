@@ -13,10 +13,9 @@ import {
 } from 'firebase/firestore';
 import { 
   createUserWithEmailAndPassword, 
+  updateProfile, 
   signInWithEmailAndPassword, 
-  signOut, 
-  updateProfile,
-  User as FirebaseUser
+  signOut 
 } from 'firebase/auth';
 
 const COLLECTIONS = {
