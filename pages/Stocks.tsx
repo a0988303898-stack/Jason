@@ -37,7 +37,12 @@ const Stocks: React.FC<StocksProps> = ({ user }) => {
     setLoadingMap(prev => ({ ...prev, [stock.id]: true }));
     const result = await fetchStockPrice(stock.symbol);
     if (result) {
-        const updated = { ...stock, currentPrice: result.price, lastUpdated: new Date().toISOString() };
+        const updated = { 
+            ...stock, 
+            currentPrice: result.price, 
+            lastUpdated: new Date().toISOString(),
+            sourceUrls: result.sources 
+        };
         if(result.name && result.name !== stock.name) updated.name = result.name;
         await saveStock(updated);
         // Optimistic update locally or fetch fresh
@@ -72,7 +77,8 @@ const Stocks: React.FC<StocksProps> = ({ user }) => {
         shares: Number(shares),
         avgCost: Number(avgCost),
         currentPrice: initialFetch?.price || Number(avgCost),
-        lastUpdated: new Date().toISOString()
+        lastUpdated: new Date().toISOString(),
+        sourceUrls: initialFetch?.sources
     };
 
     await saveStock(newStock);
@@ -148,6 +154,21 @@ const Stocks: React.FC<StocksProps> = ({ user }) => {
                         <div className="text-xs text-gray-400">
                             {new Date(stock.lastUpdated).toLocaleTimeString()}
                         </div>
+                        {stock.sourceUrls && stock.sourceUrls.length > 0 && (
+                            <div className="mt-1 flex flex-col items-end gap-1">
+                                {stock.sourceUrls.map((url, i) => (
+                                    <a 
+                                      key={i} 
+                                      href={url} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer" 
+                                      className="text-xs text-blue-500 hover:underline block max-w-[120px] truncate"
+                                    >
+                                        Source {i + 1}
+                                    </a>
+                                ))}
+                            </div>
+                        )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-bold text-gray-900">
                         ${marketValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}

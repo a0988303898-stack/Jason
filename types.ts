@@ -47,6 +47,7 @@ export interface StockPosition {
   avgCost: number;
   currentPrice: number; // Last fetched price
   lastUpdated: string;
+  sourceUrls?: string[];
 }
 
 export interface StockTransaction {

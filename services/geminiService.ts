@@ -9,7 +9,7 @@ const getAiClient = () => {
   return new GoogleGenAI({ apiKey });
 };
 
-export const fetchStockPrice = async (symbol: string): Promise<{ price: number; name: string } | null> => {
+export const fetchStockPrice = async (symbol: string): Promise<{ price: number; name: string; sources?: string[] } | null> => {
   const ai = getAiClient();
   if (!ai) return null;
 
@@ -28,12 +28,22 @@ export const fetchStockPrice = async (symbol: string): Promise<{ price: number; 
     const text = response.text;
     if (!text) return null;
     
+    // Extract sources from grounding metadata
+    const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
+    const sources = groundingChunks
+      ?.map((chunk: any) => chunk.web?.uri)
+      .filter((uri: any) => typeof uri === 'string') as string[] | undefined;
+
     // Extract JSON from text (in case of markdown wrapping)
     const jsonMatch = text.match(/\{[\s\S]*\}/);
+    let data;
     if (jsonMatch) {
-        return JSON.parse(jsonMatch[0]);
+        data = JSON.parse(jsonMatch[0]);
+    } else {
+        data = JSON.parse(text);
     }
-    return JSON.parse(text);
+
+    return { ...data, sources };
   } catch (error) {
     console.error("Gemini Stock Fetch Error:", error);
     return null;
